@@ -8,7 +8,7 @@ This repository contains the implementation of a Flask REST API that uses a SciK
 
 	**NOTE**: You can clone the environment from [environment.yml](https://github.com/danimr99/hand-sign-detection-api/blob/main/environment.yml) using Conda.
 
-  ```console
+  	```console
 		$ conda env create -f environment.yml
 	```
 
@@ -21,6 +21,6 @@ This repository contains the implementation of a Flask REST API that uses a SciK
 
 3. Run the server using the following command:
 
-  ```console
+  	```console
 		$ python3 api.py
 	```
