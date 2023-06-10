@@ -1,0 +1,134 @@
+openapi: 3.0.3
+info:
+  title: Hand Sign Detection API
+  description: A Flask REST API for hand sign detection
+  contact:
+    email: danimr1999@gmail.com
+    name: Daniel Muelle Ramos
+  license:
+    name: MIT
+    url: https://www.mit.edu/~amini/LICENSE.md
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development
+paths:
+  /api/detect:
+    post:
+      tags:
+        - Hand Signs
+      summary: Predicts a hand sign.
+      description: >-
+        Returns a JSON with each label of the model with its obtained detection confidence.
+      security: []
+      requestBody:
+        description: A list of MediaPipe Hands.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPrediction'
+      responses:
+        '200':
+          description: Hands pose estimation predicted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePrediction'
+              
+        '400':
+          description: >-
+            Request body malformed. It expects a list of one or two MediaPipe hands. 
+
+
+components:
+  schemas:
+    MediaPipeHand:
+        type: object
+        properties:
+          handedness:
+            type: string
+            enum: ['Left', 'Right']
+            description: Specifies which of the two hands is
+            example: 'Right'
+          keypoints:
+            type: array
+            items:
+              $ref: '#/components/schemas/MediaPipeHandKeypoint'
+            minItems: 21
+            maxItems: 21
+          keypoints3D:
+            type: array
+            items:
+              $ref: '#/components/schemas/MediaPipeHandKeypoint3D'
+            minItems: 21
+            maxItems: 21
+          score:
+            type: number
+            description: Hand detection confidence
+            minimum: 0
+            maximum: 100
+          
+    MediaPipeHandKeypoint:
+      type: object
+      properties:
+        x:
+          type: number
+          description: 'X position of the keypoint'
+          example: 819.8741489254247
+        y:
+          type: number
+          description: 'Y position of the keypoint'
+          example: 589.8943051150032
+        name:
+          type: string
+          description: 'Identifier of the keypoint'
+          example: 'wrist'
+
+    MediaPipeHandKeypoint3D:
+      type: object
+      properties:
+        x:
+          type: number
+          description: 'X position of the 3D keypoint'
+          example: 0.00950553952267012
+        y:
+          type: number
+          description: 'Y position of the 3D keypoint'
+          example: 0.09449900271442103
+        z:
+          type: number
+          description: 'Z position of the 3D keypoint'
+          example: 0.0008552074432373047
+        name:
+          type: string
+          description: 'Identifier of the 3D keypoint'
+          example: 'wrist'
+          
+    Prediction:
+      type: object
+      properties:
+        label:
+          type: string
+          description: A class label available on the model
+          example: 'hello'
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Detection confidence for its class label
+          example: 0.17
+
+    RequestPrediction:
+      type: array
+      items:
+        $ref: '#/components/schemas/MediaPipeHand'
+      minItems: 1
+      maxItems: 2
+        
+    ResponsePrediction:
+      type: array
+      items:
+        $ref: '#/components/schemas/Prediction'
+
+      
